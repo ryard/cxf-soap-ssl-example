@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:http="http://cxf.apache.org/transports/http/configuration"
+    xmlns:sec="http://cxf.apache.org/configuration/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cxf.apache.org/transports/camel http://cxf.apache.org/transports/camel.xsd      http://cxf.apache.org/configuration/security       http://cxf.apache.org/schemas/configuration/security.xsd      http://cxf.apache.org/transports/http/configuration       http://cxf.apache.org/schemas/configuration/http-conf.xsd      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd      http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+    <cxf:cxfEndpoint address="/contract_first_order/" id="orderEndpoint"
+        serviceName="s:OrderEndpointService" wsdlURL="wsdl/order.wsdl" xmlns:s="http://contractfirst.cxf.quickstarts.fuse.jboss.org"/>
+     
+    <!-- cust beans modified -->    
+    <!-- bean for reading configurable key/value pairs from .properties file -->
+    <bean
+        class="org.apache.camel.component.properties.PropertiesComponent" id="properties">
+        <property name="location" value="classpath:application.properties"/>
+    </bean>
+
+    <!-- CXF endpoint consumer -->
+    <cxf:cxfEndpoint
+        address="/order"
+        endpointName="s:OrderService"
+        id="_orderEndpoint"
+        serviceName="s:OrderEndpointService"
+        wsdlURL="wsdl/order.wsdl" xmlns:s="http://contractfirst.cxf.quickstarts.fuse.jboss.org"/>
+
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <!--  original example -->
+        <route id="simple-route">
+            <from uri="cxf:bean:orderEndpoint?dataFormat=PAYLOAD"/>
+            <setBody id="route-setBody">
+                <simple>Hello World from camel-context.xml</simple>
+            </setBody>
+            <log message=">>> ${body}"/>
+            <!-- and then create the OK reply for the webservice which is still waiting for a reply -->
+            <to uri="language:constant:resource:classpath:resultOK.xml"/>
+        </route>
+    </camelContext>
+</beans>

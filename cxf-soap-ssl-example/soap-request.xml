@@ -1,0 +1,10 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:con="http://contractfirst.cxf.quickstarts.fuse.jboss.org">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <con:purchaseOrder>
+         <partName>1</partName>
+         <amount>2</amount>
+         <customerName>3</customerName>
+      </con:purchaseOrder>
+   </soapenv:Body>
+</soapenv:Envelope>
