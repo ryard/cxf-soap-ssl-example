@@ -22,8 +22,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.fabric8.quickstarts.cxf.jaxws</groupId>
-  <artifactId>sb2-soap-proxy-with-ssl-example</artifactId>
-  <version>7.11.0.fuse-sb2-7_11_0-00028-redhat-00001</version>
+  <artifactId>cxf-soap-ssl-example</artifactId>
+  <version>1.0</version>
 
   <name>Fabric8 :: Quickstarts :: Spring-Boot :: CXF JAXWS</name>
   <description>Spring Boot example running a CXF JAXWS Endpoint</description>
