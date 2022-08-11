@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
 
      Copyright 2005-2015 Red Hat, Inc.
 
@@ -15,14 +14,13 @@
      implied.  See the License for the specific language governing
      permissions and limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.fabric8.quickstarts.cxf.jaxws</groupId>
-  <artifactId>cxf-soap-ssl-example</artifactId>
+  <artifactId>cxf-soap-ssl</artifactId>
+  <packaging>jar</packaging>
   <version>1.0</version>
 
   <name>Fabric8 :: Quickstarts :: Spring-Boot :: CXF JAXWS</name>
@@ -38,6 +36,8 @@
     <!-- maven plugin versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <version.jkube.openshift.maven.plugin>1.7.0</version.jkube.openshift.maven.plugin>
+    <application.runtime.image>registry.access.redhat.com/ubi8/openjdk-11-runtime:1.11-2.1645811205</application.runtime.image>
   </properties>
 
   <dependencyManagement>
@@ -84,6 +84,11 @@
 		<groupId>org.apache.cxf</groupId>
 		<artifactId>cxf-rt-transports-http-undertow</artifactId>
 	</dependency>
+  <dependency>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-impl</artifactId>
+    <version>4.0.0</version>
+  </dependency>
     <!-- testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -145,6 +150,65 @@
           </execution>
         </executions>
       </plugin>
+			<plugin>
+				<groupId>org.eclipse.jkube</groupId>
+				<artifactId>openshift-maven-plugin</artifactId>
+				<version>1.7.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resource</goal>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+            <plugin>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>openshift-maven-plugin</artifactId>
+                <version>${version.jkube.openshift.maven.plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resource</goal>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- JKube XML Configuration approach -->
+                <!-- <configuration> -->
+                    <!-- Environment variables needed to configure the runtime image -->
+                    <!-- <images>
+                        <image>
+                            <name>cxf-soap-ssl-example</name>
+                            <build>
+                                <from>openjdk:latest</from>
+                                <assembly>
+                                    <targetDir>/deployments</targetDir>
+                                    <excludeFinalOutputArtifact>true</excludeFinalOutputArtifact>
+                                    <layers>
+                                        <layer>
+                                            <id>bootable</id>
+                                            <files>
+                                                <file>
+                                                    <source>
+                                                        ${project.build.directory}/${project.artifactId}-${project.version}.jar
+                                                    </source>
+                                                    <outputDirectory>.</outputDirectory>
+                                                </file>
+                                            </files>
+                                        </layer>
+                                    </layers>
+                                </assembly>
+                                <entryPoint>
+                                    <shell>java -jar /deployments/${project.artifactId}-${project.version}-bootable.jar</shell>
+                                </entryPoint>
+                            </build>
+                        </image>
+                    </images> -->
+                <!-- </configuration> -->
+            </plugin>
 
         </plugins>
     </build>
@@ -155,9 +219,10 @@
             <build>
                 <plugins>
       <plugin>
-        <groupId>org.jboss.redhat-fuse</groupId>
-        <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>${fuse.bom.version}</version>
+        <!-- <groupId>org.jboss.redhat-fuse</groupId> -->
+        <groupId>org.eclipse.jkube</groupId>
+        <artifactId>openshift-maven-plugin</artifactId>
+                        <version>1.7.0</version>
         <executions>
           <execution>
             <goals>
@@ -216,6 +281,12 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
+		    <pluginRepository>
+			    <id>jboss-early-access-repository</id>
+			    <url>https://repository.jboss.org/nexus/content/groups/ea</url>
+		    </pluginRepository>
+
+
     </pluginRepositories>
 
 </project>
